@@ -1,43 +1,59 @@
 /// <reference path="wheel.ts"/>
+///<reference path="gameObject.ts"/>
 
-class Car {
+class Car extends GameObject {
 
-    private speed:number;
-    private div:HTMLElement;
-    private braking:boolean;
-            
-    constructor() {
-        // het DOM element waar de div in geplaatst wordt:
-        let container:HTMLElement = document.getElementById("container");
+    private speed: number;
+    private braking: boolean;
+    private game: Game;
 
-        this.div = document.createElement("car");
-        container.appendChild(this.div);
+
+    constructor(g: Game, position: number) {
+        super("car", position);
+        this.game = g;
+
+        this.x = position;
+        this.y = 220;
 
         this.speed = 4;
 
-        // hier een keypress event listener toevoegen. een keypress zorgt dat braking true wordt
-        //
 
+        // hier een keypress event listener toevoegen. een keypress zorgt dat braking true wordt
+        window.addEventListener("keydown", (e:KeyboardEvent) => this.onKeyPress(e));
         // alvast goed zetten
 
-        this.move();
     }
 
-    public move():void {
+    public move(): void {
         // hier de snelheid verlagen als we aan het afremmen zijn
         //
 
         // hier kijken of de x waarde hoger is dan de x van de rots (335)
-        //
+        if(this.x > 335) {
+            console.log("Helemaal brokko G");
+            this.speed = 0;
+        }
 
         // de snelheid bij de x waarde optellen
         //
-        
-        // tekenen
-        this.div.style.transform ="translate(200px,220px)";
-    } 
 
-    //
+        // tekenen
+        this.x += this.speed;
+        this.div.style.transform = "translate("+this.x+"px,"+this.y+"px)";
+
+    }
+
     // hier een method maken voor on key press
-    //
+    private onKeyPress(event:KeyboardEvent):void {
+        switch (event.keyCode) {
+            case 32:
+                this.speed = 0;
+                break;
+        }
+    }
+
+    private halted() {
+
+    }
 }
+
